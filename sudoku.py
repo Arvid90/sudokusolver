@@ -1,14 +1,14 @@
 # sudoku
 
-Sbox = [[1, 2, 3, 3, 5, 6, 7, 8, 0],
-        [2, 0, 0, 0, 0, 0, 0, 0, 0],
-        [3, 0, 3, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]]
+Sbox = [[0, 0, 6, 8, 0, 2, 9, 0, 7],
+        [1, 0, 0, 9, 0, 4, 0, 0, 0],
+        [2, 0, 0, 7, 0, 0, 0, 5, 0],
+        [0, 3, 1, 0, 0, 8, 7, 0, 2],
+        [9, 6, 0, 0, 7, 0, 0, 8, 0],
+        [7, 2, 0, 0, 0, 5, 0, 4, 0],
+        [0, 0, 2, 4, 0, 0, 0, 0, 5],
+        [0, 1, 0, 0, 2, 9, 8, 0, 4],
+        [6, 0, 0, 1, 8, 0, 0, 0, 0]]
 
 
 def test_row(row, guess):
@@ -20,7 +20,6 @@ def test_row(row, guess):
     print("possibruh")
     return True
 
-
 def test_column(column, guess):
     for i in range(9):
         print("Guess: ", guess, "At pos: ", Sbox[i][column])
@@ -31,23 +30,48 @@ def test_column(column, guess):
     return True
 
 
-def test_subsquare(row, col, guess):
-    #solve with math instead of branching?
-    if row < 3:
-        #1
-    elif row < 6:
-        ##2
+def is_full(s_box):
+    for i in range(9):
+        for j in range(9):
+            if s_box[i][j] == 0:
+                return False
+    return True
+
+def is_valid(s,i,j,k):
+    for a in range(9):
+        if s[i][a] == k or s[a][j] == k:
+            return False
+    qi = i//3
+    qj = j//3
+    for a in range(qi*3,qi*3+3):
+        for b in range(qj*3, qj*3+3):
+            if s[a][b] == k:
+                return False
+    return True
+
+
+def find_nonempty(s):
+    for i in range(9):
+        for j in range(9):
+            if s[i][j] == 0:
+                return (i,j)
+    print("error in find_nonempty")
+
+def solve(s):
+    if is_full(s):
+        return True
     else:
-        #3
+        (i,j)=find_nonempty(s)
+    for k in range(1,10):
+        if is_valid(s,i,j,k):
+            s[i][j] = k
+            if solve(s):
+                return True
+    return False
 
-#        def test_next
 
-#print("testing col ", Sbox[][0])
-test_col = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-for i in range(9):
-    test_col[i] = Sbox[i][0]
-print("testing column: ", test_col)
-test_column(0, 4)
-#for guess in range(9):
-#    print("testing guess: ", guess+1)
-#    test_row(0, guess+1)
+#print(is_valid(Sbox, 1,7,9))
+#output = is_full(Sbox)
+output = find_nonempty(Sbox)
+
+print (output)
